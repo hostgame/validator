@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <title>Verify Nebulas address</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="contenner">
+        <div class="logo">
+            <div class="img">
+                <img src="img/logo.png" alt="">
+            </div>
+            <div class="name">Verify Nebulas address</div>
+        </div>
+        <div class="noExtension hide" id="noExtension">
+            NOTE: Please install <a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet">WebExtensionWallet</a>  to use NameSend
+        </div>
+
+        <div class="app_form check">
+            <input id="address" type="text" placeholder="address" disabled>
+            <button id="check" disabled>check</button>
+        </div>
+
+    </div>
+    <script src=lib/jquery-3.3.1.min.js></script>
+    <script src=lib/nebPay.js></script>
+    <script>
+    var NebPay = require("nebpay");
+    var nebPay = new NebPay();
+
+    if(typeof(webExtensionWallet) === "undefined"){
+        //alert ("Extension wallet is not installed, please install it first.")
+        $("#noExtension").removeClass("hide")
+    }else{
+        $("#check").attr("disabled",false);
+        $("#address").attr("disabled",false);
+    }
+
+    var dappAddress = "n1g6wXtAhhFNWTbDuDEfSKaR9nqULdgimb6";
+
+    $("#check").click(function(){
+        var to = dappAddress;
+        var value = "0.05";
+        var callFunction = "check";
+        var callArgs = "[\"" + $("#address").val() + "\"]";
+
+        nebPay.simulateCall(to, value, callFunction, callArgs, {
+            listener: function(resp) {
+                var result = resp.result
+                console.log("SENDING: return of rpc call: " + JSON.stringify(result));
+                if(result === "\"invalid\""){
+                    alert("Address is INVALID");
+                }else{
+                    alert("Address is valid");
+                }
+            }
+        });
+
+    });
+
+</script>
+</body>
+
+</html>
